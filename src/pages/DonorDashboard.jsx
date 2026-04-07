@@ -38,12 +38,6 @@ export default function DonorDashboard() {
             return;
         }
 
-        if (val && !currentUser?.isVerified) {
-            if (confirm("Verification Required: You must verify your identity to appear available for donation. Go to Profile?")) {
-                navigate('/profile');
-            }
-            return;
-        }
 
         if (val === true) {
             // Turning ON: Require Declaration
@@ -197,12 +191,6 @@ function RequestCard({ request, eligible, recoveryMessage }) {
             return;
         }
 
-        if (!currentUser?.isVerified) {
-            if (confirm("Verification Required: You must verify your identity to accept blood requests. Go to Profile?")) {
-                navigate('/profile');
-            }
-            return;
-        }
         setShowConsent(true);
     };
 

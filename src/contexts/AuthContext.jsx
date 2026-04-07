@@ -33,11 +33,6 @@ export function AuthProvider({ children }) {
                         const userData = docSnap.data();
                         console.log("Auth: Snapshot update", userData?.bloodStock);
 
-                        // Specific override for the hardcoded admin or admin role
-                        const isAdminUser = user.email === 'admin@gmail.com' || userData.role === 'admin';
-                        if (isAdminUser) {
-                            userData.isVerified = true;
-                        }
 
                         // Only update if we are NOT in the middle of a deliberate role switch
                         // This prevents race conditions where DB update comes before we navigate
@@ -45,12 +40,11 @@ export function AuthProvider({ children }) {
                             setUserRole(userData.role);
                         }
 
-                        setCurrentUser({ ...user, ...userData, isVerified: isAdminUser || userData.isVerified });
+                        setCurrentUser({ ...user, ...userData });
                     } else {
                         console.log("Auth: Profile missing in DB. Attempting self-healing...");
                         // 1. Set temporary user state so app doesn't crash or logout
-                        const isAdminUser = user.email === 'admin@gmail.com';
-                        setCurrentUser({ ...user, isVerified: isAdminUser });
+                        setCurrentUser(user);
                         setUserRole(null);
 
                         // 2. Automatically create the missing document
@@ -74,7 +68,7 @@ export function AuthProvider({ children }) {
 
                     // FALLBACK: Even if DB fails, keep user logged in with basic auth info
                     console.warn("Auth: Falling back to basic auth user due to DB error.");
-                    setCurrentUser({ ...user, isVerified: false, role: null });
+                    setCurrentUser({ ...user, role: null });
 
                     // ATTEMPT RECOVERY: If permission error (likely due to missing doc + strict rules)
                     // Try to blindly Create/Write the document

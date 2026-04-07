@@ -278,7 +278,7 @@ export function MCPProvider({ children }) {
                 status: 'accepted',
                 donorId: currentUser.uid,
                 donorName: currentUser.displayName || currentUser.email,
-                donorPhone: currentUser.phoneNumber || "Not Shared",
+                donorPhone: currentUser.whatsappNumber || "Not Shared",
                 acceptedAt: serverTimestamp(),
                 consentGiven: true, // Store on Request
                 consentTimestamp: serverTimestamp()
@@ -432,7 +432,7 @@ export function MCPProvider({ children }) {
                     updatedAt: serverTimestamp(),
                     donorId: currentUser.uid,
                     donorName: currentUser.displayName || "Blood Bank Admin",
-                    donorPhone: currentUser.phoneNumber || "Blood Bank",
+                    donorPhone: currentUser.whatsappNumber || "Blood Bank",
                     fulfillmentType: 'stock_supply'
                 });
             });

@@ -7,7 +7,6 @@ import { db } from '../lib/firebase';
 import { collection, query, where, getDocs, orderBy, addDoc, serverTimestamp, increment } from 'firebase/firestore';
 import { Button } from '../components/Button';
 import { Card } from '../components/Card';
-import { VerificationBadge } from '../components/VerificationBadge';
 import { User, Heart, Droplet, Edit2, Save, X, Clock, Activity } from 'lucide-react';
 
 import { BackButton } from '../components/BackButton';
@@ -26,12 +25,11 @@ export default function ProfilePage() {
         displayName: '',
         gender: '',
         bloodGroup: '',
-        phoneNumber: '', // Optional default
+        whatsappNumber: '',
         age: '',
         weight: '',
         lastDonated: '',
         photoURL: '',
-        isVerified: false,
         bloodStock: {} // { 'A+': 10, 'B-': 5 ... }
     });
 
@@ -70,12 +68,11 @@ export default function ProfilePage() {
                 displayName: currentUser.displayName || currentUser.name || '',
                 gender: currentUser.gender || '',
                 bloodGroup: currentUser.bloodGroup || '',
-                phoneNumber: currentUser.phoneNumber || '',
+                whatsappNumber: currentUser.whatsappNumber || '',
                 age: currentUser.age || '',
                 weight: currentUser.weight || '',
                 lastDonated: formattedDate,
                 photoURL: currentUser.photoURL || '',
-                isVerified: currentUser.isVerified || false,
                 bloodStock: currentUser.bloodStock || {}
             });
             fetchStats();
@@ -184,28 +181,31 @@ export default function ProfilePage() {
 
             const updateData = {
                 displayName: formData.displayName,
-                name: formData.displayName, // syncing both for safety
-                gender: formData.gender,
-                bloodGroup: formData.bloodGroup,
-                phoneNumber: formData.phoneNumber,
-                age: formData.age,
-                weight: formData.weight,
-                bloodStock: formData.bloodStock // Persist stock data
+                name: formData.displayName,
+                whatsappNumber: formData.whatsappNumber,
             };
 
-            if (formData.lastDonated) {
-                // Convert string date to Firestore timestamp or Date object
-                updateData.lastDonated = new Date(formData.lastDonated);
+            if (userRole === 'admin') {
+                updateData.bloodStock = formData.bloodStock;
             } else {
-                // Explicitly set to null if empty to allow clearing the date
-                updateData.lastDonated = null;
+                updateData.gender = formData.gender;
+                updateData.bloodGroup = formData.bloodGroup;
+                updateData.age = formData.age;
+                updateData.weight = formData.weight;
+                
+                if (formData.lastDonated) {
+                    updateData.lastDonated = new Date(formData.lastDonated);
+                } else {
+                    updateData.lastDonated = null;
+                }
             }
 
             await updateUserProfile(updateData);
             setIsEditing(false);
             alert("Profile Updated!");
         } catch (err) {
-            alert("Failed to update profile.");
+            console.error(err);
+            alert(`Failed to update profile: ${err.message || 'Unknown Error'}`);
         }
     };
 
@@ -214,38 +214,17 @@ export default function ProfilePage() {
         // Admin only needs Name and Phone
         if (userRole === 'admin') {
             if (!formData.displayName) missing.push("Clinic Name");
-            if (!formData.phoneNumber) missing.push("Phone Number");
+            if (!formData.whatsappNumber) missing.push("WhatsApp Number");
             return missing;
         }
 
         if (!formData.age || parseInt(formData.age) < 18) missing.push("Age (18+)");
         if (!formData.weight || parseInt(formData.weight) < 50) missing.push("Weight (50kg+)");
         if (!formData.bloodGroup) missing.push("Blood Group");
-        if (!formData.phoneNumber) missing.push("Phone Number");
+        if (!formData.whatsappNumber) missing.push("WhatsApp Number");
         return missing;
     };
 
-    const handleRequestVerification = async () => {
-        const missing = getMissingFields();
-        if (missing.length > 0) {
-            alert(`Please complete the following profile details first:\n• ${missing.join('\n• ')}`);
-            return;
-        }
-
-
-        try {
-            await updateUserProfile({
-                verificationStatus: 'requested',
-                verificationRequestedAt: new Date().toISOString()
-            });
-            // Optimistic update
-            // setFormData(prev => ({ ...prev, verificationStatus: 'requested' })); // updateUserProfile should trigger effect, but let's see
-            alert("Verification Request Sent! Visit the clinic for physical verification.");
-        } catch (err) {
-            console.error(err);
-            alert("Failed to send request.");
-        }
-    };
 
     return (
         <div className="max-w-4xl mx-auto p-4 space-y-6 pb-24 relative">
@@ -292,42 +271,6 @@ export default function ProfilePage() {
                     </div>
 
                     <div className="flex-1 space-y-4 w-full">
-                        {!formData.isVerified && !isEditing && (!currentUser?.role || currentUser?.role === 'donor') && (
-                            <div className="bg-yellow-50 dark:bg-yellow-900/10 border border-yellow-200 dark:border-yellow-900/30 rounded-lg p-3 flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
-                                <div className="text-sm text-yellow-800">
-                                    <span className="font-semibold block">Blood Bank Verification</span>
-                                    {currentUser?.verificationStatus === 'requested'
-                                        ? "Your request is pending. Please visit the clinic with your ID."
-                                        : "Request verification to enable blood donation."}
-
-                                    {/* Inline Validation Error */}
-                                    {getMissingFields().length > 0 && (
-                                        <div className="mt-2 text-red-600 text-xs font-medium">
-                                            <p className="mb-0.5">Missing Required Fields:</p>
-                                            <ul className="list-disc list-inside">
-                                                {getMissingFields().map(field => (
-                                                    <li key={field}>{field}</li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    )}
-                                </div>
-                                {currentUser?.verificationStatus === 'requested' ? (
-                                    <div className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-semibold uppercase tracking-wider">
-                                        Request Sent
-                                    </div>
-                                ) : (
-                                    <Button
-                                        size="sm"
-                                        variant="outline"
-                                        onClick={handleRequestVerification}
-                                        className={`border-yellow-600 text-yellow-700 hover:bg-yellow-100 ${getMissingFields().length > 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                    >
-                                        Request Verification
-                                    </Button>
-                                )}
-                            </div>
-                        )}
 
                         {isEditing ? (
                             <div className="grid gap-4 max-w-md">
@@ -340,12 +283,12 @@ export default function ProfilePage() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Phone Number</label>
+                                    <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">WhatsApp Number (Optional)</label>
                                     <input
                                         className="w-full p-2 border rounded-lg bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                        value={formData.phoneNumber}
+                                        value={formData.whatsappNumber}
                                         placeholder="+91..."
-                                        onChange={e => setFormData({ ...formData, phoneNumber: e.target.value })}
+                                        onChange={e => setFormData({ ...formData, whatsappNumber: e.target.value })}
                                     />
                                 </div>
 
@@ -428,7 +371,6 @@ export default function ProfilePage() {
                                 <div>
                                     <div className="flex items-center gap-2">
                                         <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{formData.displayName || "Anonymous User"}</h2>
-                                        <VerificationBadge isVerified={formData.isVerified} />
                                     </div>
                                     <p className="text-gray-500 dark:text-gray-400">{currentUser?.email}</p>
 
@@ -455,9 +397,11 @@ export default function ProfilePage() {
                                         )}
                                     </div>
 
-                                    {currentUser?.phoneNumber && (
-                                        <p className="text-sm text-gray-500 mt-2">📞 {currentUser.phoneNumber}</p>
-                                    )}
+                                    <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2">
+                                        {currentUser?.whatsappNumber && (
+                                            <p className="text-sm text-gray-500">💬 {currentUser.whatsappNumber}</p>
+                                        )}
+                                    </div>
                                 </div>
                                 <Button onClick={() => setIsEditing(true)} variant="ghost" size="sm">
                                     <Edit2 className="h-4 w-4" />
