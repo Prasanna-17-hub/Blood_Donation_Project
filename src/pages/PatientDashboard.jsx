@@ -167,21 +167,23 @@ export default function PatientDashboard() {
 
                                 </div>
                                 <div className="flex flex-row sm:flex-col gap-2 w-full sm:w-auto">
-                                    {req.status === 'accepted' && (
+                                    {(req.status === 'accepted' || req.status === 'ready_for_pickup') && (
                                         <>
+                                            {req.status === 'accepted' && (
+                                                <Button
+                                                    size="sm"
+                                                    className="flex-1 sm:flex-none bg-green-600 hover:bg-green-700"
+                                                    onClick={() => handleContact(req.id)}
+                                                >
+                                                    Contact
+                                                </Button>
+                                            )}
                                             <Button
                                                 size="sm"
-                                                className="flex-1 sm:flex-none bg-green-600 hover:bg-green-700"
-                                                onClick={() => handleContact(req.id)}
-                                            >
-                                                Contact
-                                            </Button>
-                                            <Button
-                                                size="sm"
-                                                className="flex-1 sm:flex-none bg-blue-600 hover:bg-blue-700"
+                                                className="flex-1 sm:flex-none bg-blue-600 hover:bg-blue-700 font-bold"
                                                 onClick={() => handleComplete(req.id)}
                                             >
-                                                Received
+                                                {req.status === 'ready_for_pickup' ? 'Confirm Pickup' : 'Received'}
                                             </Button>
                                         </>
                                     )}

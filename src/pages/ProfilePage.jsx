@@ -417,47 +417,90 @@ export default function ProfilePage() {
                 </div >
             </Card >
 
-            {/* Eligibility Status (New) - Hide for Admin */}
-            {
-                userRole !== 'admin' && (
-                    <Card className="border-l-4 border-l-amber-500 overflow-hidden shadow-2xl relative">
-                        <div className="absolute top-0 right-0 w-32 h-full bg-gradient-to-l from-amber-500/5 to-transparent pointer-events-none"></div>
+            {/* Operational Readiness / Eligibility Status */}
+            {userRole !== 'admin' && (
+                <Card className="p-8 border-l-4 border-l-[#e60026] overflow-hidden shadow-2xl relative group">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-[#e60026]/5 rounded-full -mr-32 -mt-32 blur-3xl group-hover:bg-[#e60026]/10 transition-all duration-700"></div>
+                    
+                    <div className="relative z-10 space-y-8">
+                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                            <div className="space-y-2">
+                                <h3 className="text-2xl font-black text-white tracking-tight flex items-center gap-2">
+                                    <Activity className="h-6 w-6 text-[#e60026]" />
+                                    Donation <span className="text-[#e60026]">Readiness</span>
+                                </h3>
+                                <p className="text-gray-500 text-sm font-medium">Protocol: Minimum gap between consecutive donations.</p>
+                            </div>
+
+                            {/* Rule Display */}
+                            <div className="flex gap-4">
+                                <div className="px-4 py-2 rounded-2xl bg-navy-800 border border-navy-700 text-center">
+                                    <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Men</p>
+                                    <p className="text-lg font-black text-white">90 <span className="text-xs text-[#e60026]">DAYS</span></p>
+                                </div>
+                                <div className="px-4 py-2 rounded-2xl bg-navy-800 border border-navy-700 text-center">
+                                    <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Women</p>
+                                    <p className="text-lg font-black text-white">120 <span className="text-xs text-[#e60026]">DAYS</span></p>
+                                </div>
+                            </div>
+                        </div>
+
                         {(() => {
                             const { eligible, daysRemaining, percentage, nextDate } = calculateDonationEligibility(currentUser?.lastDonated, currentUser?.gender);
-                            if (eligible) return null; // Don't show if eligible (or show a green card saying 'Ready to Donate')
+                            
+                            if (eligible) {
+                                return (
+                                    <div className="flex flex-col items-center justify-center p-8 bg-green-500/5 rounded-[2rem] border border-green-500/20 text-center space-y-4">
+                                        <div className="p-4 bg-green-500/10 rounded-full border border-green-500/20 shadow-[0_0_20px_rgba(34,197,94,0.2)]">
+                                            <CheckCircle className="h-10 w-10 text-green-500" />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-2xl font-black text-white uppercase tracking-tight">Status: Operational</h4>
+                                            <p className="text-green-500 font-bold uppercase tracking-widest text-xs mt-1">You are eligible to donate today</p>
+                                        </div>
+                                    </div>
+                                );
+                            }
 
                             return (
-                                <div className="p-6 md:p-8 relative z-10">
-                                    <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
-                                        <div className="p-4 bg-amber-500/10 rounded-2xl flex-none border border-amber-500/20">
-                                            <Clock className="h-8 w-8 text-amber-500" />
+                                <div className="space-y-6">
+                                    <div className="flex flex-col md:flex-row items-center gap-8 p-6 bg-amber-500/5 rounded-[2rem] border border-amber-500/20">
+                                        <div className="space-y-2 text-center md:text-left flex-1">
+                                            <h4 className="text-xl font-black text-white uppercase tracking-tight">Recovery in Progress</h4>
+                                            <p className="text-gray-400 text-sm font-medium max-w-sm">
+                                                Based on your last donation, your biological assets are being replenished.
+                                            </p>
+                                            <p className="text-xs font-bold text-amber-500/80 uppercase tracking-widest pt-2">
+                                                Next available: {nextDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                                            </p>
                                         </div>
-                                        <div className="flex-1 w-full">
-                                            <h3 className="text-2xl font-black text-white tracking-tight">Recovery Mode <span className="text-amber-500">Active</span></h3>
-                                            <div className="mt-3 text-gray-400 font-medium">
-                                                Biological replenishment in progress. Next window in:
-                                                <div className="mt-4 mb-4 flex justify-center sm:justify-start">
-                                                    <CountdownTimer targetDate={nextDate} />
-                                                </div>
-                                                <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Target Date: <span className="text-amber-500">{nextDate.toLocaleDateString()}</span></span>
-                                            </div>
 
-                                            <div className="mt-6">
-                                                <div className="w-full bg-navy-800 rounded-full h-2 overflow-hidden shadow-inner">
-                                                    <div
-                                                        className="bg-amber-500 h-2 rounded-full transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(245,158,11,0.5)]"
-                                                        style={{ width: `${percentage}%` }}
-                                                    />
-                                                </div>
-                                            </div>
+                                        <div className="flex flex-col items-center gap-2">
+                                            <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Time Remaining</p>
+                                            <CountdownTimer targetDate={nextDate} variant="default" size="lg" />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <div className="flex justify-between text-[10px] font-black text-amber-500 uppercase tracking-widest">
+                                            <span>Replenishment Progress</span>
+                                            <span>{Math.round(percentage)}%</span>
+                                        </div>
+                                        <div className="w-full bg-navy-800 rounded-full h-3 overflow-hidden shadow-inner p-0.5">
+                                            <motion.div
+                                                className="bg-gradient-to-r from-amber-600 to-amber-400 h-full rounded-full shadow-[0_0_15px_rgba(245,158,11,0.4)]"
+                                                initial={{ width: 0 }}
+                                                animate={{ width: `${percentage}%` }}
+                                                transition={{ duration: 1.5, ease: "easeOut" }}
+                                            />
                                         </div>
                                     </div>
                                 </div>
                             );
                         })()}
-                    </Card>
-                )
-            }
+                    </div>
+                </Card>
+            )}
 
             {/* Impact Stats Grid */}
             {
@@ -515,7 +558,9 @@ export default function ProfilePage() {
                                     </div>
                                     <div>
                                         <p className="text-xs text-gray-500 uppercase tracking-widest font-black">Network Support</p>
-                                        <p className="text-4xl font-black text-white">{donationsReceived.length} <span className="text-lg text-gray-500">UNITS</span></p>
+                                        <p className="text-4xl font-black text-white">
+                                            {currentUser?.unitsReceived ?? donationsReceived.length} <span className="text-lg text-gray-500">UNITS</span>
+                                        </p>
                                     </div>
                                 </div>
                             </Card>

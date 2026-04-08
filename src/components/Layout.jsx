@@ -66,14 +66,11 @@ export default function Layout() {
                         <div className="hidden md:flex items-center gap-4">
                             {currentUser ? (
                                 <>
-                                    {currentUser.role === 'admin' && (
+                                    {currentUser && (
                                         <>
-                                            <Button variant="ghost" size="sm" className="mr-2 text-gray-300 hover:bg-gray-800 hover:text-white">
-                                                Dashboard
-                                            </Button>
-                                            <Link to="/admin">
-                                                <Button variant="ghost" size="sm" className="mr-2 text-red-600 hover:text-red-700 hover:bg-red-50">
-                                                    Donate Blood
+                                            <Link to="/admin-dashboard">
+                                                <Button variant="ghost" size="sm" className="mr-2 text-gray-300 hover:bg-gray-800 hover:text-white">
+                                                    Dashboard
                                                 </Button>
                                             </Link>
                                         </>

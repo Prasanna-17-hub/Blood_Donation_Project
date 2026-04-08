@@ -95,12 +95,13 @@ export function MCPProvider({ children }) {
                         // 2. Data integrity check
                         if (!d.bloodGroup) return false;
 
-                        // 3. 90-Day Cooldown Safety Check (Server-side enforcement)
+                        // 3. Gender-specific Cooldown Check (Men: 90, Women: 120)
                         if (d.lastDonated) {
                             const last = new Date(d.lastDonated.seconds ? d.lastDonated.seconds * 1000 : d.lastDonated);
                             const diffTime = Math.abs(new Date() - last);
                             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                            if (diffDays < 90) return false;
+                            const cooldown = (d.gender && d.gender.toLowerCase() === 'female') ? 120 : 90;
+                            if (diffDays < cooldown) return false;
                         }
 
                         return true;
@@ -358,14 +359,25 @@ export function MCPProvider({ children }) {
                     isAvailable: false // Auto-mark unavailable
                 });
 
-                // AUTO-UPDATE: If this was a Center/Admin request, update their blood stock
+                // Update Patient Stats (Network Support)
                 if (requestData.patientId) {
                     const patientRef = doc(db, "users", requestData.patientId);
-                    // Dynamically update the specific blood group stock
-                    const stockField = `bloodStock.${requestData.bloodGroup}`;
-                    transaction.update(patientRef, {
-                        [stockField]: increment(1)
-                    });
+                    
+                    // Logic: If it's a regular patient, increment unitsReceived. 
+                    // If it's another center (admin), they also track unitsReceived but usually they manage stock.
+                    // We'll increment unitsReceived for all as a global 'support' stat.
+                    
+                    const updateData = {
+                        unitsReceived: increment(1)
+                    };
+
+                    // If it's an admin/center, also update their blood stock
+                    if (requestData.recipientRole === 'admin') {
+                        const stockField = `bloodStock.${requestData.bloodGroup}`;
+                        updateData[stockField] = increment(1);
+                    }
+
+                    transaction.update(patientRef, updateData);
                 }
             });
             console.log("MCP: Request completed & Donor stats updated");
