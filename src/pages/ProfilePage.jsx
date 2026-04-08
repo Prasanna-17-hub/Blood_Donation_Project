@@ -7,8 +7,8 @@ import { db } from '../lib/firebase';
 import { collection, query, where, getDocs, orderBy, addDoc, serverTimestamp, increment } from 'firebase/firestore';
 import { Button } from '../components/Button';
 import { Card } from '../components/Card';
-import { User, Heart, Droplet, Edit2, Save, X, Clock, Activity } from 'lucide-react';
-
+import { User, Heart, Droplet, Edit2, Save, X, Clock, Activity, CheckCircle } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { BackButton } from '../components/BackButton';
 
 export default function ProfilePage() {
