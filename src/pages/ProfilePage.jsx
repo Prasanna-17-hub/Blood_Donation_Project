@@ -227,27 +227,30 @@ export default function ProfilePage() {
 
 
     return (
-        <div className="max-w-4xl mx-auto p-4 space-y-6 pb-24 relative">
+        <div className="max-w-4xl mx-auto p-4 space-y-8 pb-32 relative">
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-6">
                 <BackButton />
-                <h1 className="text-2xl font-bold text-gray-900">My Profile</h1>
+                <h1 className="text-4xl font-black text-white tracking-tight">User <span className="text-[#e60026]">Profiler</span></h1>
             </div>
 
             {/* Profile Card */}
-            <Card className="p-6 bg-white dark:bg-gray-800 dark:border-gray-700">
-                <div className="flex flex-col md:flex-row items-center gap-6">
-                    <div className="relative group">
-                        <div className="h-24 w-24 rounded-full overflow-hidden bg-red-100 dark:bg-red-900/20 flex items-center justify-center flex-none border-2 border-transparent group-hover:border-red-500 transition-colors cursor-pointer"
+            <Card className="p-8 shadow-2xl relative overflow-hidden group">
+                {/* Decorative background element */}
+                <div className="absolute top-0 right-0 w-64 h-64 bg-red-600/5 rounded-full -mr-32 -mt-32 blur-3xl group-hover:bg-red-600/10 transition-all duration-700"></div>
+                
+                <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
+                    <div className="relative">
+                        <div className="h-32 w-32 rounded-3xl overflow-hidden bg-navy-800 border-2 border-navy-700 shadow-inner flex items-center justify-center flex-none group-hover:border-[#e60026] transition-all duration-500 cursor-pointer transform hover:scale-105"
                             onClick={() => document.getElementById('photo-upload').click()}>
                             {formData.photoURL ? (
                                 <img src={formData.photoURL} alt="Profile" className="h-full w-full object-cover" />
                             ) : (
-                                <User className="h-12 w-12 text-red-600" />
+                                <User className="h-16 w-16 text-gray-600 group-hover:text-[#e60026] transition-colors" />
                             )}
                             {uploading && (
-                                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                                    <div className="animate-spin h-6 w-6 border-2 border-white border-t-transparent rounded-full"></div>
+                                <div className="absolute inset-0 bg-navy-900/80 flex items-center justify-center backdrop-blur-sm">
+                                    <div className="animate-spin h-8 w-8 border-2 border-[#e60026] border-t-transparent rounded-full shadow-[0_0_15px_rgba(230,0,38,0.5)]"></div>
                                 </div>
                             )}
                         </div>
@@ -369,30 +372,32 @@ export default function ProfilePage() {
                         ) : (
                             <div className="flex justify-between items-start w-full">
                                 <div>
-                                    <div className="flex items-center gap-2">
-                                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{formData.displayName || "Anonymous User"}</h2>
+                                    <div className="flex items-center gap-3">
+                                        <h2 className="text-4xl font-black text-white tracking-tight">{formData.displayName || "Anonymous User"}</h2>
+                                        {userRole === 'admin' && <span className="bg-[#e60026] text-white text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest shadow-lg shadow-red-600/20">Admin</span>}
                                     </div>
                                     <p className="text-gray-500 dark:text-gray-400">{currentUser?.email}</p>
 
-                                    <div className="flex flex-wrap gap-2 mt-2">
+                                    <div className="flex flex-wrap gap-2 mt-4">
                                         {userRole !== 'admin' && (
-                                            <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300">
-                                                Blood Group: {currentUser?.bloodGroup || "Not Set"}
+                                            <div className="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-bold bg-[#e60026] text-white shadow-lg shadow-red-600/20 transition-transform hover:scale-105">
+                                                <Droplet className="h-3 w-3 mr-1.5 fill-current" />
+                                                GROUP: {currentUser?.bloodGroup || "Pending"}
                                             </div>
                                         )}
                                         {currentUser?.gender && (
-                                            <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 dark:bg-gray-700/50 text-gray-800 dark:text-gray-300">
+                                            <div className="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-bold bg-navy-800 border border-navy-700 text-gray-300 shadow-xl transition-transform hover:scale-105">
                                                 {currentUser.gender}
                                             </div>
                                         )}
                                         {currentUser?.age && (
-                                            <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 dark:bg-gray-700/50 text-gray-800 dark:text-gray-300">
-                                                Age: {currentUser.age}
+                                            <div className="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-bold bg-navy-800 border border-navy-700 text-gray-300 shadow-xl transition-transform hover:scale-105">
+                                                AGE: {currentUser.age}
                                             </div>
                                         )}
                                         {currentUser?.weight && (
-                                            <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 dark:bg-gray-700/50 text-gray-800 dark:text-gray-300">
-                                                Weight: {currentUser.weight}kg
+                                            <div className="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-bold bg-navy-800 border border-navy-700 text-gray-300 shadow-xl transition-transform hover:scale-105">
+                                                {currentUser.weight}KG
                                             </div>
                                         )}
                                     </div>
@@ -415,31 +420,32 @@ export default function ProfilePage() {
             {/* Eligibility Status (New) - Hide for Admin */}
             {
                 userRole !== 'admin' && (
-                    <Card className="bg-white border-l-4 border-l-amber-500 overflow-hidden">
+                    <Card className="border-l-4 border-l-amber-500 overflow-hidden shadow-2xl relative">
+                        <div className="absolute top-0 right-0 w-32 h-full bg-gradient-to-l from-amber-500/5 to-transparent pointer-events-none"></div>
                         {(() => {
                             const { eligible, daysRemaining, percentage, nextDate } = calculateDonationEligibility(currentUser?.lastDonated, currentUser?.gender);
                             if (eligible) return null; // Don't show if eligible (or show a green card saying 'Ready to Donate')
 
                             return (
-                                <div className="p-4 md:p-6">
-                                    <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left">
-                                        <div className="p-3 bg-amber-100 dark:bg-amber-900/40 rounded-full flex-none">
-                                            <Clock className="h-6 w-6 text-amber-600 dark:text-amber-500" />
+                                <div className="p-6 md:p-8 relative z-10">
+                                    <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
+                                        <div className="p-4 bg-amber-500/10 rounded-2xl flex-none border border-amber-500/20">
+                                            <Clock className="h-8 w-8 text-amber-500" />
                                         </div>
                                         <div className="flex-1 w-full">
-                                            <h3 className="font-bold text-gray-900 dark:text-white text-lg">Recovery Period Active</h3>
-                                            <div className="mt-2 text-gray-600 dark:text-gray-300">
-                                                You can donate again in:
-                                                <div className="mt-2 mb-2 flex justify-center sm:justify-start">
+                                            <h3 className="text-2xl font-black text-white tracking-tight">Recovery Mode <span className="text-amber-500">Active</span></h3>
+                                            <div className="mt-3 text-gray-400 font-medium">
+                                                Biological replenishment in progress. Next window in:
+                                                <div className="mt-4 mb-4 flex justify-center sm:justify-start">
                                                     <CountdownTimer targetDate={nextDate} />
                                                 </div>
-                                                <span className="text-xs">Next eligible date: <span className="font-semibold">{nextDate.toLocaleDateString()}</span></span>
+                                                <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Target Date: <span className="text-amber-500">{nextDate.toLocaleDateString()}</span></span>
                                             </div>
 
-                                            <div className="mt-4">
-                                                <div className="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
+                                            <div className="mt-6">
+                                                <div className="w-full bg-navy-800 rounded-full h-2 overflow-hidden shadow-inner">
                                                     <div
-                                                        className="bg-amber-500 h-3 rounded-full transition-all duration-1000 ease-out"
+                                                        className="bg-amber-500 h-2 rounded-full transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(245,158,11,0.5)]"
                                                         style={{ width: `${percentage}%` }}
                                                     />
                                                 </div>
@@ -460,20 +466,21 @@ export default function ProfilePage() {
 
                         {/* Donations Made Column */}
                         <div className="space-y-4">
-                            <Card className="p-4 border-l-4 border-l-red-500 bg-gradient-to-br from-red-50 to-white dark:from-red-900/10 dark:to-gray-800 dark:border-gray-700">
-                                <div className="flex items-center gap-4">
-                                    <div className="p-3 bg-red-200 dark:bg-red-900/40 rounded-full">
-                                        <Heart className="h-6 w-6 text-red-700 dark:text-red-400" />
+                            <Card className="p-6 border-l-4 border-l-[#e60026] relative overflow-hidden group shadow-2xl">
+                                <div className="absolute top-0 right-0 w-32 h-full bg-gradient-to-l from-red-600/10 to-transparent pointer-events-none"></div>
+                                <div className="flex items-center gap-6 relative z-10">
+                                    <div className="p-4 bg-[#e60026]/10 rounded-2xl border border-[#e60026]/20 group-hover:scale-110 transition-transform duration-500">
+                                        <Heart className="h-8 w-8 text-[#e60026] fill-[#e60026]/20" />
                                     </div>
                                     <div>
-                                        <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Lives Saved (Donated)</p>
-                                        <p className="text-3xl font-bold text-gray-900 dark:text-white">{currentUser?.livesSaved || 0}</p>
+                                        <p className="text-xs text-gray-500 uppercase tracking-widest font-black">Impact Factor</p>
+                                        <p className="text-4xl font-black text-white">{currentUser?.livesSaved || 0} <span className="text-lg text-gray-500">LIVES</span></p>
                                     </div>
                                 </div>
                             </Card>
 
-                            <h3 className="font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
-                                <Heart className="h-4 w-4 text-red-500" /> Donation History
+                            <h3 className="text-lg font-black text-white uppercase tracking-tighter flex items-center gap-2 pt-4">
+                                <span className="h-2 w-2 rounded-full bg-[#e60026] animate-pulse"></span> Donation Logs
                             </h3>
                             <div className="space-y-3">
                                 {loadingStats ? <p className="text-gray-400 text-sm">Loading...</p> :
@@ -481,15 +488,15 @@ export default function ProfilePage() {
                                         <p className="text-sm text-gray-400 italic">No donations recorded yet.</p>
                                     ) : (
                                         donationsMade.map(d => (
-                                            <Card key={d.id} className="p-3 bg-white dark:bg-gray-800 dark:border-gray-700">
+                                            <Card key={d.id} className="p-4 bg-navy-800/50 border-navy-700 hover:border-[#e60026]/50 transition-colors">
                                                 <div className="flex justify-between items-center">
                                                     <div>
-                                                        <p className="font-medium text-gray-900 dark:text-white">Patient: {d.patientName}</p>
-                                                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                                                        <p className="font-black text-white text-sm uppercase tracking-tight">{d.patientName}</p>
+                                                        <p className="text-[10px] text-gray-500 font-bold">
                                                             {d.completedAt?.seconds && new Date(d.completedAt.seconds * 1000).toLocaleDateString()}
                                                         </p>
                                                     </div>
-                                                    <span className="text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 px-2 py-1 rounded-full">Completed</span>
+                                                    <span className="text-[10px] bg-[#e60026]/20 text-[#e60026] border border-[#e60026]/30 px-2 py-0.5 rounded-full font-black uppercase tracking-tighter">Verified</span>
                                                 </div>
                                             </Card>
                                         ))
@@ -500,14 +507,15 @@ export default function ProfilePage() {
 
                         {/* Donations Received Column */}
                         <div className="space-y-4">
-                            <Card className="p-4 border-l-4 border-l-blue-500 bg-gradient-to-br from-blue-50 to-white dark:from-blue-900/10 dark:to-gray-800 dark:border-gray-700">
-                                <div className="flex items-center gap-4">
-                                    <div className="p-3 bg-blue-200 dark:bg-blue-900/40 rounded-full">
-                                        <Droplet className="h-6 w-6 text-blue-700 dark:text-blue-400" />
+                            <Card className="p-6 border-l-4 border-l-blue-500 relative overflow-hidden group shadow-2xl">
+                                <div className="absolute top-0 right-0 w-32 h-full bg-gradient-to-l from-blue-600/10 to-transparent pointer-events-none"></div>
+                                <div className="flex items-center gap-6 relative z-10">
+                                    <div className="p-4 bg-blue-500/10 rounded-2xl border border-blue-500/20 group-hover:scale-110 transition-transform duration-500">
+                                        <Droplet className="h-8 w-8 text-blue-500 fill-blue-500/20" />
                                     </div>
                                     <div>
-                                        <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Support Received</p>
-                                        <p className="text-3xl font-bold text-gray-900 dark:text-white">{donationsReceived.length}</p>
+                                        <p className="text-xs text-gray-500 uppercase tracking-widest font-black">Network Support</p>
+                                        <p className="text-4xl font-black text-white">{donationsReceived.length} <span className="text-lg text-gray-500">UNITS</span></p>
                                     </div>
                                 </div>
                             </Card>
@@ -521,15 +529,15 @@ export default function ProfilePage() {
                                         <p className="text-sm text-gray-400 italic">No donations received yet.</p>
                                     ) : (
                                         donationsReceived.map(d => (
-                                            <Card key={d.id} className="p-3 bg-white dark:bg-gray-800 dark:border-gray-700">
+                                            <Card key={d.id} className="p-4 bg-navy-800/50 border-navy-700 hover:border-blue-500/50 transition-colors">
                                                 <div className="flex justify-between items-center">
                                                     <div>
-                                                        <p className="font-medium text-gray-900 dark:text-white">Donor: {d.donorName || "Unknown"}</p>
-                                                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                                                        <p className="font-black text-white text-sm uppercase tracking-tight">{d.donorName || "Unknown Node"}</p>
+                                                        <p className="text-[10px] text-gray-500 font-bold">
                                                             {d.completedAt?.seconds && new Date(d.completedAt.seconds * 1000).toLocaleDateString()}
                                                         </p>
                                                     </div>
-                                                    <span className="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2 py-1 rounded-full">Received</span>
+                                                    <span className="text-[10px] bg-blue-500/20 text-blue-400 border border-blue-500/30 px-2 py-0.5 rounded-full font-black uppercase tracking-tighter">Received</span>
                                                 </div>
                                             </Card>
                                         ))

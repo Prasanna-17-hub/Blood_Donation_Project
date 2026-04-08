@@ -5,7 +5,7 @@ import { useMCP } from '../contexts/MCPContext';
 import { Card, CardContent, CardHeader } from '../components/Card';
 import { Button } from '../components/Button';
 import { Switch } from '@headlessui/react';
-import { MapPin, Bell, Clock, CheckCircle } from 'lucide-react';
+import { MapPin, Bell, Clock, CheckCircle, HeartPulse } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { calculateDonationEligibility, canDonate } from '../lib/utils';
 import CountdownTimer from '../components/CountdownTimer';
@@ -13,6 +13,7 @@ import { DonorDeclarationModal } from '../components/DonorDeclarationModal';
 
 export default function DonorDashboard() {
     const { currentUser } = useAuth();
+    const navigate = useNavigate();
     const { activeRequests, toggleDonorAvailability } = useMCP();
     const [isAvailable, setIsAvailable] = useState(currentUser?.isAvailable || false);
     const [showDeclaration, setShowDeclaration] = useState(false);
@@ -77,66 +78,100 @@ export default function DonorDashboard() {
                 onConfirm={handleDeclarationConfirm}
             />
 
-            {/* Header Stat Card */}
-            <Card className={`border-l-4 ${eligible ? 'border-l-red-600' : 'border-l-amber-500'}`}>
-                <CardContent>
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-4">
-                        <div>
-                            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Donor Status</h2>
-                            <p className={`text-sm ${!eligible ? 'text-amber-600 dark:text-amber-500 font-medium' : 'text-gray-500 dark:text-gray-400'}`}>
-                                {!eligible ? "Recovery Period Active" : (isAvailable ? "You are visible to nearby patients." : "You are currently offline.")}
-                            </p>
-                        </div>
-                        <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-start bg-gray-50 dark:bg-gray-800/50 p-2 rounded-lg sm:bg-transparent sm:p-0">
-                            <span className={`text-sm font-medium ${!eligible ? 'text-amber-600 dark:text-amber-500' : (isAvailable ? 'text-red-600 dark:text-red-500' : 'text-gray-400 dark:text-gray-500')}`}>
-                                {!eligible ? <CountdownTimer targetDate={nextDate} /> : (isAvailable ? 'Available' : 'Unavailable')}
-                            </span>
-
-                            <div className={!eligible ? "opacity-50 cursor-not-allowed" : ""}>
-                                <Switch
-                                    checked={isAvailable && eligible}
-                                    onChange={handleToggle}
-                                    className={`${isAvailable && eligible ? 'bg-red-600 dark:bg-red-500' : 'bg-gray-200 dark:bg-gray-700'
-                                        } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none`}
-                                >
-                                    <span
-                                        className={`${isAvailable && eligible ? 'translate-x-6' : 'translate-x-1'
-                                            } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
-                                    />
-                                </Switch>
-                            </div>
+            {/* Hero Banner Section */}
+            <div className="relative overflow-hidden rounded-[2rem] bg-navy-800 border border-navy-700 shadow-2xl group">
+                <div className="absolute inset-0 bg-gradient-to-r from-navy-900 via-navy-900/60 to-transparent z-10"></div>
+                <img 
+                    src="/blood.png" 
+                    alt="Hero" 
+                    className="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:scale-105 transition-transform duration-1000"
+                />
+                
+                <div className="relative z-20 p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8">
+                    <div className="space-y-6 max-w-xl text-center md:text-left">
+                        <motion.div 
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#e60026]/10 border border-[#e60026]/20 text-[#e60026] text-[10px] font-black uppercase tracking-widest"
+                        >
+                            <span className="h-1.5 w-1.5 rounded-full bg-[#e60026] animate-pulse"></span>
+                            Live Terminal
+                        </motion.div>
+                        <h1 className="text-4xl md:text-6xl font-black text-white leading-tight tracking-tighter">
+                            DONATE <br/>
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#e60026] to-red-500">YOUR BLOOD</span>
+                        </h1>
+                        <p className="text-gray-400 font-medium">
+                            Join the elite network of donors saving lives across the region. Your contribution is our core strength.
+                        </p>
+                        <div className="pt-2">
+                            <Button size="lg" className="rounded-full px-8 shadow-lg shadow-red-600/20" onClick={() => navigate('/profile')}>
+                                View Your Impact
+                            </Button>
                         </div>
                     </div>
 
-                    {!eligible && (
-                        <div className="mt-4">
-                            <div className="flex justify-between text-xs text-amber-700 mb-1">
-                                <span>Recovery Progress</span>
-                                <span>{Math.round(percentage)}%</span>
+                    <div className="relative w-full max-w-sm">
+                        <Card className="p-6 bg-navy-900/80 backdrop-blur-xl border-navy-700 shadow-2xl relative z-10 transition-transform hover:-translate-y-2 duration-500">
+                            <div className="flex justify-between items-start mb-6">
+                                <div>
+                                    <h2 className="text-2xl font-black text-white tracking-tight">Status</h2>
+                                    <p className={`text-xs font-bold uppercase tracking-widest ${!eligible ? 'text-amber-500' : 'text-gray-500'}`}>
+                                        {!eligible ? "Recovery Active" : "Operational"}
+                                    </p>
+                                </div>
+                                <div className="p-3 bg-[#e60026]/10 rounded-2xl border border-[#e60026]/20">
+                                    <HeartPulse className="h-6 w-6 text-[#e60026]" />
+                                </div>
                             </div>
-                            <div className="w-full bg-amber-100 rounded-full h-2.5 overflow-hidden">
-                                <motion.div
-                                    className="bg-amber-500 h-2.5 rounded-full"
-                                    initial={{ width: 0 }}
-                                    animate={{ width: `${percentage}%` }}
-                                    transition={{ duration: 1, ease: "easeOut" }}
-                                />
+
+                            <div className="flex items-center justify-between p-3 bg-navy-800 rounded-2xl border border-navy-700">
+                                <span className={`text-sm font-black uppercase tracking-tighter ${!eligible ? 'text-amber-500' : (isAvailable ? 'text-[#e60026]' : 'text-gray-500')}`}>
+                                    {!eligible ? <CountdownTimer targetDate={nextDate} /> : (isAvailable ? 'Broadcasting' : 'Standby')}
+                                </span>
+
+                                <div className={!eligible ? "opacity-50 cursor-not-allowed" : ""}>
+                                    <Switch
+                                        checked={isAvailable && eligible}
+                                        onChange={handleToggle}
+                                        className={`${isAvailable && eligible ? 'bg-[#e60026]' : 'bg-navy-700'
+                                            } relative inline-flex h-6 w-11 items-center rounded-full transition-all focus:outline-none shadow-inner`}
+                                    >
+                                        <span
+                                            className={`${isAvailable && eligible ? 'translate-x-6' : 'translate-x-1'
+                                                } inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow-lg`}
+                                        />
+                                    </Switch>
+                                </div>
                             </div>
-                            <p className="text-xs text-amber-600 mt-2 flex items-center gap-1">
-                                <Clock className="h-3 w-3" />
-                                {message}
-                            </p>
-                        </div>
-                    )}
-                </CardContent>
-            </Card>
+
+                            {!eligible && (
+                                <div className="mt-6 space-y-2">
+                                    <div className="flex justify-between text-[10px] font-black text-amber-500 uppercase tracking-widest">
+                                        <span>Bio-Replenishment</span>
+                                        <span>{Math.round(percentage)}%</span>
+                                    </div>
+                                    <div className="w-full bg-navy-800 rounded-full h-1.5 overflow-hidden">
+                                        <motion.div
+                                            className="bg-amber-500 h-full rounded-full shadow-[0_0_10px_rgba(245,158,11,0.5)]"
+                                            initial={{ width: 0 }}
+                                            animate={{ width: `${percentage}%` }}
+                                            transition={{ duration: 1, ease: "easeOut" }}
+                                        />
+                                    </div>
+                                </div>
+                            )}
+                        </Card>
+                    </div>
+                </div>
+            </div>
 
             <div className="grid md:grid-cols-3 gap-6">
                 {/* Main Feed */}
                 <div className="md:col-span-2 space-y-6">
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                        <Bell className="h-5 w-5 text-red-600 dark:text-red-500" />
-                        Active Requests Nearby
+                    <h3 className="text-2xl font-black text-white tracking-tight flex items-center gap-3">
+                        <Bell className="h-6 w-6 text-[#e60026]" />
+                        Active Requests
                     </h3>
 
                     <div className="space-y-4">

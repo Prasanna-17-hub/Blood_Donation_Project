@@ -5,13 +5,13 @@ import { cn } from '../lib/utils';
 
 
 export function Button({ className, variant = 'primary', size = 'default', children, ...props }) {
-    const baseStyles = "inline-flex items-center justify-center rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none";
+    const baseStyles = "inline-flex items-center justify-center rounded-full font-bold transition-all active:scale-95 focus:outline-none disabled:opacity-50 disabled:pointer-events-none";
 
     const variants = {
-        primary: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 shadow-md shadow-red-200",
-        secondary: "bg-white text-gray-900 border border-gray-200 hover:bg-gray-50 focus:ring-gray-200",
-        outline: "border border-red-200 text-red-600 hover:bg-red-50 focus:ring-red-200",
-        ghost: "bg-transparent text-gray-600 hover:bg-gray-100",
+        primary: "bg-[#e60026] text-white hover:bg-red-700 shadow-lg shadow-red-900/20 px-6",
+        secondary: "bg-navy-700 text-white hover:bg-navy-600 border border-navy-700 px-6",
+        outline: "border-2 border-[#e60026] text-[#e60026] hover:bg-[#e60026] hover:text-white px-6",
+        ghost: "bg-transparent text-gray-400 hover:text-white hover:bg-white/10 px-6",
     };
 
     const sizes = {

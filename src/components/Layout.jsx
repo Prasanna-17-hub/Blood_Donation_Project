@@ -47,9 +47,9 @@ export default function Layout() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-950 font-sans text-gray-100 transition-colors duration-200">
-            {/* Navigation - Forced Dark Theme */}
-            <nav className="bg-gray-950 border-b border-gray-800 sticky top-0 z-50 transition-colors duration-200">
+        <div className="min-h-screen bg-transparent font-sans text-gray-100 transition-colors duration-200">
+            {/* Navigation - Premium Navy */}
+            <nav className="bg-navy-900/80 backdrop-blur-lg border-b border-navy-700 sticky top-0 z-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16">
                         <div className="flex items-center">
@@ -146,8 +146,8 @@ export default function Layout() {
                             <div className="px-4 py-6 space-y-6">
                                 {currentUser ? (
                                     <>
-                                        <div className="flex items-center p-4 bg-gray-50 rounded-2xl">
-                                            <div className="h-12 w-12 bg-red-100 rounded-full flex items-center justify-center text-red-600 font-bold border border-red-200 mr-4 text-lg">
+                                        <div className="flex items-center p-4 bg-navy-800 rounded-2xl border border-navy-700">
+                                            <div className="h-12 w-12 bg-red-600 rounded-full flex items-center justify-center text-white font-bold border border-red-500 mr-4 text-lg">
                                                 {currentUser.photoURL ? (
                                                     <img src={currentUser.photoURL} alt="Profile" className="h-full w-full object-cover rounded-full" />
                                                 ) : (
@@ -155,10 +155,10 @@ export default function Layout() {
                                                 )}
                                             </div>
                                             <div>
-                                                <div className="font-bold text-gray-900 text-lg">
+                                                <div className="font-bold text-white text-lg">
                                                     {currentUser.displayName || currentUser.email.split('@')[0]}
                                                 </div>
-                                                <p className="text-sm text-gray-500">
+                                                <p className="text-sm text-gray-400">
                                                     {userRole === 'admin' ? 'Administrator' : userRole === 'donor' ? 'Active Donor' : 'Patient Account'}
                                                 </p>
                                             </div>
@@ -233,7 +233,7 @@ export default function Layout() {
             </main>
 
             {/* Footer */}
-            <footer className="bg-gray-950 border-t border-gray-800 py-8 mt-auto">
+            <footer className="bg-navy-900/80 backdrop-blur-md border-t border-navy-700 py-8 mt-auto">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center gap-4">
                     <div className="flex items-center gap-6">
                         <a

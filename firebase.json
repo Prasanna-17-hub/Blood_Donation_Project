@@ -1,4 +1,8 @@
 {
+    "firestore": {
+        "rules": "firestore.rules",
+        "indexes": "firestore.indexes.json"
+    },
     "hosting": {
         "site": "principal-yen-460311-a9",
         "public": "dist",

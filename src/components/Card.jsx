@@ -2,7 +2,7 @@ import { cn } from '../lib/utils';
 
 export function Card({ className, children, ...props }) {
     return (
-        <div className={cn("bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm transition-colors text-gray-900 dark:text-gray-100", className)} {...props}>
+        <div className={cn("navy-card transition-all duration-300", className)} {...props}>
             {children}
         </div>
     );

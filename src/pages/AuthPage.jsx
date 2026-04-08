@@ -98,33 +98,33 @@ export default function AuthPage() {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-950 py-12 px-4 sm:px-6 lg:px-8 transition-colors relative">
+        <div className="flex items-center justify-center min-h-[calc(100vh-80px)] py-12 px-4 sm:px-6 lg:px-8 transition-colors relative">
             <div className="absolute top-4 left-4">
                 <BackButton to="/" />
             </div>
-            <Card className="w-full max-w-md shadow-xl border-t-4 border-t-red-600">
+            <Card className="w-full max-w-md shadow-2xl p-2">
                 <CardHeader className="text-center space-y-4 pt-8">
-                    <div className="mx-auto h-16 w-16 bg-red-50 dark:bg-red-900/20 rounded-full flex items-center justify-center shadow-inner">
-                        <HeartPulse className="h-10 w-10 text-red-600 dark:text-red-500" />
+                    <div className="mx-auto h-20 w-20 bg-red-600 rounded-3xl flex items-center justify-center shadow-lg transform rotate-12">
+                        <HeartPulse className="h-12 w-12 text-white -rotate-12" />
                     </div>
-                    <div>
-                        <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white">LifeLink</h2>
-                        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                            {isLogin ? "Welcome back, hero." : "Join the network using tech for good."}
+                    <div className="pt-2">
+                        <h2 className="text-4xl font-black text-white tracking-tight">LifeLink</h2>
+                        <p className="mt-2 text-sm text-gray-400 font-medium">
+                            {isLogin ? "Authentication Required" : "Create Security Credentials"}
                         </p>
                     </div>
 
                     {/* Tabs */}
-                    <div className="flex bg-gray-100 dark:bg-gray-800 p-1 rounded-lg">
+                    <div className="flex bg-navy-800 p-1.5 rounded-full border border-navy-700">
                         <button
                             onClick={() => setIsLogin(true)}
-                            className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${isLogin ? 'bg-white dark:bg-gray-700 shadow-sm text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}
+                            className={`flex-1 py-2 text-sm font-bold rounded-full transition-all ${isLogin ? 'bg-[#e60026] text-white shadow-lg' : 'text-gray-500 hover:text-white'}`}
                         >
                             Log In
                         </button>
                         <button
                             onClick={() => setIsLogin(false)}
-                            className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${!isLogin ? 'bg-white dark:bg-gray-700 shadow-sm text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}
+                            className={`flex-1 py-2 text-sm font-bold rounded-full transition-all ${!isLogin ? 'bg-[#e60026] text-white shadow-lg' : 'text-gray-500 hover:text-white'}`}
                         >
                             Sign Up
                         </button>
@@ -237,14 +237,14 @@ export default function AuthPage() {
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <Lock className="h-4 w-4 text-gray-400" />
                                 </div>
-                                <input
-                                    type="password"
-                                    required
-                                    className="pl-10 block w-full rounded-md border-gray-300 dark:border-gray-700 shadow-sm focus:ring-red-500 focus:border-red-500 sm:text-sm border p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-                                    placeholder="••••••••"
-                                    value={formData.password}
-                                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                />
+                                        <input
+                                            type="password"
+                                            required
+                                            className="pl-10 block w-full rounded-xl bg-navy-800 border-navy-700 focus:border-[#e60026] outline-none transition-all sm:text-sm border p-3 text-white placeholder-gray-500"
+                                            placeholder="••••••••"
+                                            value={formData.password}
+                                            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                        />
                             </div>
                         </div>
 

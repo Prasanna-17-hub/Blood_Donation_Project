@@ -3,8 +3,15 @@
 @tailwind utilities;
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  
+  /* Theme Colors */
+  --navy-900: #0a0f1c;
+  --navy-800: #121a2e;
+  --navy-700: #1a264a;
+  --crimson: #e60026;
+  --crimson-dark: #cc0022;
+  
   /* Mobile Safe Areas */
   --sat: env(safe-area-inset-top);
   --sar: env(safe-area-inset-right);
@@ -17,6 +24,64 @@ body {
   padding-right: var(--sar);
   padding-bottom: var(--sab);
   padding-left: var(--sal);
-  /* Prevent double-tap to zoom on mobile */
+  background-color: var(--navy-900);
+  background-image: 
+    radial-gradient(at 0% 0%, hsla(220, 60%, 15%, 1) 0, transparent 50%), 
+    radial-gradient(at 100% 0%, hsla(350, 80%, 20%, 0.5) 0, transparent 50%),
+    radial-gradient(circle at 50% 50%, hsla(220, 50%, 10%, 1) 0, var(--navy-900) 100%);
+  background-attachment: fixed;
+  color: #f8fafc;
   touch-action: manipulation;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: -10%;
+  left: -10%;
+  width: 40%;
+  height: 40%;
+  background: transparent;
+  border: 60px solid rgba(255, 255, 255, 0.03);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -1;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  bottom: -5%;
+  right: -5%;
+  width: 30%;
+  height: 30%;
+  background: transparent;
+  border: 40px solid rgba(230, 0, 40, 0.05);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.glass-card {
+  @apply bg-opacity-20 bg-white backdrop-blur-md border border-white border-opacity-10 rounded-3xl;
+}
+
+.navy-card {
+  @apply bg-[#121a2e] border border-gray-800 rounded-3xl shadow-2xl;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--navy-900);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--navy-700);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--crimson);
 }

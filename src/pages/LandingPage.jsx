@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Button } from '../components/Button';
-import { HeartPulse, ShieldCheck, MapPin, Activity, Clock, AlertCircle, XCircle, Phone, CheckCircle, Megaphone, Database, Plus } from 'lucide-react';
+import { HeartPulse, ShieldCheck, MapPin, Activity, Clock, AlertCircle, XCircle, Phone, CheckCircle, Megaphone, Database, Plus, Droplets } from 'lucide-react';
 import DemoModal from '../components/DemoModal';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
@@ -12,9 +12,6 @@ import { useMCP } from '../contexts/MCPContext';
 import { db } from '../lib/firebase';
 import { collection, addDoc, updateDoc, query, where, getDocs, onSnapshot, doc, serverTimestamp, setDoc, deleteDoc, increment } from 'firebase/firestore';
 import { Card } from '../components/Card';
-
-
-
 export default function LandingPage() {
     const { currentUser, userRole } = useAuth();
     const [showDemo, setShowDemo] = useState(false);
@@ -144,15 +141,7 @@ export default function LandingPage() {
         }
     };
 
-    const getDestination = () => {
-        if (!currentUser) return "/auth";
-        if (userRole === 'admin') return "/admin-dashboard";
-        if (userRole === 'donor') return "/donor-dashboard";
-        if (userRole === 'patient') return "/patient-dashboard";
-        return "/role-selection";
-    };
 
-    const destination = getDestination();
 
     // ADMIN VIEW
     if (userRole === 'admin') {
@@ -170,11 +159,12 @@ export default function LandingPage() {
                         </span>
                         Live: Emergency Blood Network Active
                     </motion.div>
-                    <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-white">
-                        Admin Operations Console
+                    <h1 className="text-5xl md:text-7xl font-black tracking-tight text-white leading-tight">
+                        Admin Operations <br/>
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#e60026] via-red-500 to-red-800 uppercase">Console</span>
                     </h1>
-                    <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-                        Manage network emergencies and blood supply requests.
+                    <p className="text-xl text-gray-400 max-w-2xl mx-auto font-medium">
+                        Real-time network security and blood supply management system.
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8 px-4 flex-wrap">
@@ -187,24 +177,24 @@ export default function LandingPage() {
                             Broadcast Request
                         </Button>
 
-                        <div className="flex bg-gray-900 p-1 rounded-lg border border-gray-800 shadow-sm">
+                        <div className="flex bg-navy-800 p-1.5 rounded-full border border-navy-700 shadow-2xl">
                             <button
                                 onClick={() => setActiveTab('responses')}
-                                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2 ${activeTab === 'responses' ? 'bg-gray-800 text-white shadow-sm' : 'text-gray-400 hover:text-gray-300 hover:bg-gray-800/50'}`}
+                                className={`px-6 py-2 rounded-full text-sm font-bold transition-all flex items-center gap-2 ${activeTab === 'responses' ? 'bg-[#e60026] text-white shadow-lg' : 'text-gray-400 hover:text-white hover:bg-navy-700'}`}
                             >
                                 <Activity className="h-4 w-4" />
                                 My Broadcasts
                             </button>
                             <button
                                 onClick={() => setActiveTab('incoming')}
-                                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2 ${activeTab === 'incoming' ? 'bg-red-900/20 text-red-400 shadow-sm' : 'text-gray-400 hover:text-gray-300 hover:bg-gray-800/50'}`}
+                                className={`px-6 py-2 rounded-full text-sm font-bold transition-all flex items-center gap-2 ${activeTab === 'incoming' ? 'bg-[#e60026] text-white shadow-lg' : 'text-gray-400 hover:text-white hover:bg-navy-700'}`}
                             >
                                 <HeartPulse className="h-4 w-4" />
                                 Patient Requests
                             </button>
                             <button
                                 onClick={() => setActiveTab('stock')}
-                                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2 ${activeTab === 'stock' ? 'bg-blue-900/20 text-blue-400 shadow-sm' : 'text-gray-400 hover:text-gray-300 hover:bg-gray-800/50'}`}
+                                className={`px-6 py-2 rounded-full text-sm font-bold transition-all flex items-center gap-2 ${activeTab === 'stock' ? 'bg-[#e60026] text-white shadow-lg' : 'text-gray-400 hover:text-white hover:bg-navy-700'}`}
                             >
                                 <Database className="h-4 w-4" />
                                 Blood Stock
@@ -227,8 +217,8 @@ export default function LandingPage() {
 
                     {activeTab === 'responses' ? (
                         adminRequests.length === 0 ? (
-                            <div className="text-center py-12 bg-gray-900 rounded-xl border-2 border-dashed border-gray-800">
-                                <p className="text-gray-500">No active emergency broadcasts. Network is stable.</p>
+                            <div className="text-center py-20 bg-navy-800/50 rounded-3xl border-2 border-dashed border-navy-700">
+                                <p className="text-gray-500 font-medium text-lg">No active emergency broadcasts. Network is stable.</p>
                             </div>
                         ) : (
                             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -344,91 +334,99 @@ export default function LandingPage() {
     return (
         <div className="flex flex-col gap-8 md:gap-16 pb-16 relative">
 
-            {/* Hero Section */}
-            <section className="text-center space-y-6 md:space-y-8 pt-6 md:pt-10">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 font-medium text-sm border border-red-100 dark:border-red-900/30"
-                >
-                    <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
-                    </span>
-                    Live: Emergency Blood Network Active
-                </motion.div>
+            {/* Premium Hero Section */}
+            <section className="relative min-h-[80vh] flex items-center justify-center pt-20 overflow-hidden">
+                {/* Background Accents */}
+                <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#e60026]/10 blur-[120px] rounded-full"></div>
+                <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-600/5 blur-[120px] rounded-full"></div>
+                
+                <div className="container mx-auto px-6 relative z-10 grid lg:grid-cols-2 gap-16 items-center">
+                    <div className="space-y-10 text-center lg:text-left">
+                        <motion.div
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-navy-800/50 backdrop-blur-md border border-navy-700 text-[#e60026] text-sm font-black uppercase tracking-[0.2em]"
+                        >
+                            <span className="relative flex h-2 w-2">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#e60026] opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#e60026]"></span>
+                            </span>
+                            Emergency Blood Network Active
+                        </motion.div>
 
-                <motion.h1
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 }}
-                    className="text-4xl md:text-7xl font-extrabold tracking-tight text-white dark:text-white px-2"
-                >
-                    {userRole === 'admin' ? "Admin Console" : "Your blood can"} <br />
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-900">
-                        {userRole === 'admin' ? "Manage LifeLink Network" : "save a life today."}
-                    </span>
-                </motion.h1>
-
-                {currentUser && userRole !== 'admin' && !calculateDonationEligibility(currentUser?.lastDonated, currentUser?.gender).eligible && (
-                    <motion.div
-                        initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        transition={{ delay: 0.4 }}
-                        className="max-w-2xl mx-auto bg-white dark:bg-gray-900 rounded-2xl p-6 flex flex-col md:flex-row items-center gap-6 shadow-xl shadow-gray-200 dark:shadow-none border-2 border-red-100 dark:border-red-900/30"
-                    >
-                        <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-full shadow-inner border border-red-100 dark:border-red-900/30">
-                            <Clock className="h-8 w-8 text-red-600 animate-pulse" />
+                        <div className="space-y-4">
+                            <motion.h1
+                                initial={{ opacity: 0, y: 30 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.1 }}
+                                className="text-6xl md:text-8xl font-black text-white leading-[0.9] tracking-tighter uppercase"
+                            >
+                                DONATE <br/>
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#e60026] via-red-500 to-red-800">YOUR BLOOD</span>
+                            </motion.h1>
+                            <motion.p
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.2 }}
+                                className="text-xl text-gray-400 max-w-xl mx-auto lg:mx-0 font-medium leading-relaxed"
+                            >
+                                LifeLink is the world's most advanced emergency response network. 
+                                Connect with donors, track supply, and save lives in real-time.
+                            </motion.p>
                         </div>
-                        <div className="flex-1 text-center md:text-left text-gray-900 dark:text-gray-100">
-                            <h3 className="font-bold text-2xl mb-1 tracking-tight">Recovery Period Active</h3>
-                            <p className="text-gray-500 dark:text-gray-400 mb-4 text-base font-medium">
-                                Your safety is priority. You will be eligible to save lives again in:
-                            </p>
-                            <div className="flex justify-center md:justify-start">
-                                <CountdownTimer
-                                    targetDate={calculateDonationEligibility(currentUser?.lastDonated, currentUser?.gender).nextDate}
-                                    variant="critical"
-                                    size="lg"
-                                />
+
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.3 }}
+                            className="flex flex-col sm:flex-row gap-6 justify-center lg:justify-start"
+                        >
+                            {!currentUser && (
+                                <Link to="/auth">
+                                    <Button variant="outline" size="xl" className="w-full sm:w-auto text-xl px-12 rounded-full backdrop-blur-md border-navy-700 hover:border-[#e60026] transition-all">
+                                        Join Network
+                                    </Button>
+                                </Link>
+                            )}
+                        </motion.div>
+                    </div>
+
+                    <motion.div 
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.2, type: "spring", stiffness: 50 }}
+                        className="relative hidden lg:block"
+                    >
+                        <div className="relative z-20 rounded-[3rem] overflow-hidden border-8 border-navy-800 shadow-[0_0_100px_rgba(230,0,38,0.1)] group">
+                            <div className="absolute inset-0 bg-gradient-to-t from-navy-900 via-transparent to-transparent z-10"></div>
+                            <img 
+                                src="/blood.png" 
+                                alt="Donate Your Blood" 
+                                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                            />
+                            <div className="absolute bottom-12 left-12 right-12 z-20 p-8 bg-navy-900/80 backdrop-blur-2xl rounded-3xl border border-navy-700/50 shadow-2xl">
+                                <div className="flex items-center gap-6">
+                                    <div className="h-16 w-16 bg-[#e60026] rounded-2xl flex items-center justify-center shadow-xl shadow-[#e60026]/20">
+                                        <HeartPulse className="h-8 w-8 text-white animate-pulse" />
+                                    </div>
+                                    <div>
+                                        <h4 className="text-2xl font-black text-white uppercase tracking-tighter">Live Status</h4>
+                                        <p className="text-gray-400 font-bold uppercase text-xs tracking-widest">Network Synchronized</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
+                        {/* Decorative Circles */}
+                        <div className="absolute -top-12 -right-12 w-48 h-48 bg-[#e60026]/20 blur-3xl rounded-full animate-pulse"></div>
+                        <div className="absolute -bottom-12 -left-12 w-64 h-64 bg-blue-600/10 blur-3xl rounded-full"></div>
                     </motion.div>
-                )}
-                <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className="text-xl text-gray-500 dark:text-gray-400 max-w-2xl mx-auto"
-                >
-                    LifeLink connects donors and patients in real-time during emergencies.
-                    Smart matching, ethical tracking, and instant coordination.
-                </motion.p>
-
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
-                    className="flex flex-col sm:flex-row gap-4 justify-center"
-                >
-                    <Link to={destination}>
-                        <Button size="lg" className="w-full sm:w-auto text-lg px-8">
-                            {currentUser ? 'Go to Dashboard' : 'Find Blood Now'}
-                        </Button>
-                    </Link>
-                    {!currentUser && (
-                        <Link to="/auth">
-                            <Button variant="outline" size="lg" className="w-full sm:w-auto text-lg px-8">
-                                Register as Donor
-                            </Button>
-                        </Link>
-                    )}
-                </motion.div>
-
-
+                </div>
             </section>
 
             <DemoModal isOpen={showDemo} onClose={() => setShowDemo(false)} />
+
+
 
 
         </div>
@@ -438,6 +436,10 @@ export default function LandingPage() {
 // Helper Component for Admin's Own Requests
 function AdminRequestCard({ req, navigate, completeRequest, fetchAdminRequests }) {
     const toast = useToast();
+    const statusClasses = req.status === 'accepted' ? 'bg-green-100 text-green-700' :
+        req.status === 'completed' ? 'bg-blue-100 text-blue-700' :
+        'bg-yellow-100 text-yellow-700';
+
     return (
         <Card className="p-5 border-l-4 border-l-red-500 relative hover:shadow-lg transition-shadow">
             <div className="flex justify-between items-start mb-3">
@@ -447,10 +449,7 @@ function AdminRequestCard({ req, navigate, completeRequest, fetchAdminRequests }
                     </span>
                     <h3 className="text-3xl font-bold text-gray-900 mt-2">{req.bloodGroup}</h3>
                 </div>
-                <div className={`px-2 py-1 rounded text-xs font-bold uppercase ${req.status === 'accepted' ? 'bg-green-100 text-green-700' :
-                    req.status === 'completed' ? 'bg-blue-100 text-blue-700' :
-                        'bg-yellow-100 text-yellow-700'
-                    }`}>
+                <div className={`px-2 py-1 rounded text-xs font-bold uppercase ${statusClasses}`}>
                     {req.status}
                 </div>
             </div>
@@ -486,7 +485,6 @@ function AdminRequestCard({ req, navigate, completeRequest, fetchAdminRequests }
                         <div className="mt-3 pt-3 border-t border-green-200">
                             <Button
                                 onClick={async () => {
-                                    // Removed confirm for smoother flow, relying on explicit button action
                                     try {
                                         await completeRequest(req.id);
                                         toast.success("Stock Updated! Donation completed.");

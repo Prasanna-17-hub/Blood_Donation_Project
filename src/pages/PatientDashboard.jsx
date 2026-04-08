@@ -41,60 +41,86 @@ export default function PatientDashboard() {
 
     return (
         <div className="space-y-8">
-            {/* Header Actions */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div>
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Find a Donor</h1>
-                    <p className="text-gray-500 dark:text-gray-400">Create a request to alert nearby donors.</p>
+            {/* Hero Banner Section */}
+            <div className="relative overflow-hidden rounded-[2rem] bg-navy-800 border border-navy-700 shadow-2xl group">
+                <div className="absolute inset-0 bg-gradient-to-r from-navy-900 via-navy-900/60 to-transparent z-10"></div>
+                <img 
+                    src="/blood.png" 
+                    alt="Hero" 
+                    className="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:scale-105 transition-transform duration-1000"
+                />
+                
+                <div className="relative z-20 p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8">
+                    <div className="space-y-6 max-w-xl text-center md:text-left">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#e60026]/10 border border-[#e60026]/20 text-[#e60026] text-[10px] font-black uppercase tracking-widest">
+                            <span className="h-1.5 w-1.5 rounded-full bg-[#e60026] animate-pulse"></span>
+                            Emergency Terminal
+                        </div>
+                        <h1 className="text-4xl md:text-6xl font-black text-white leading-tight tracking-tighter">
+                            FIND <br/>
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#e60026] to-red-500">LIFE-SAVING POWER</span>
+                        </h1>
+                        <p className="text-gray-400 font-medium">
+                            Alert our elite network of active donors. Every second counts in our mission to sustain life.
+                        </p>
+                        <div className="pt-2">
+                            <Button size="lg" className="rounded-full px-8 shadow-lg shadow-red-600/20" onClick={() => setShowForm(!showForm)}>
+                                {showForm ? 'Cancel Operation' : 'Initialize Request'}
+                            </Button>
+                        </div>
+                    </div>
+
+                    <div className="hidden lg:block">
+                        <div className="p-4 bg-navy-900/50 backdrop-blur-xl border border-navy-700 rounded-3xl rotate-3 hover:rotate-0 transition-transform duration-500">
+                             <div className="w-48 h-48 rounded-2xl bg-gradient-to-br from-[#e60026] to-red-600 flex items-center justify-center shadow-2xl">
+                                <Activity className="h-24 w-24 text-white animate-pulse" />
+                             </div>
+                        </div>
+                    </div>
                 </div>
-                <Button onClick={() => setShowForm(!showForm)} size="lg" className="w-full sm:w-auto shadow-lg shadow-red-200">
-                    {showForm ? 'Cancel Request' : 'New Emergency Request'}
-                </Button>
             </div>
 
             {/* Request Form */}
             {showForm && (
-                <Card className="bg-red-50 dark:bg-red-900/10 border-red-100 dark:border-red-900/30">
-                    <CardHeader>
-                        <h3 className="font-bold text-red-900 dark:text-red-400 flex items-center gap-2">
-                            <AlertCircle className="h-5 w-5" />
-                            Emergency Request Details
+                <Card className="bg-navy-800/50 backdrop-blur-xl border-[#e60026]/30 overflow-hidden relative">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-[#e60026]/5 blur-3xl rounded-full"></div>
+                    <CardHeader className="border-b border-navy-700/50">
+                        <h3 className="text-xl font-black text-white uppercase tracking-tighter flex items-center gap-2">
+                            <AlertCircle className="h-6 w-6 text-[#e60026]" />
+                            Operation Parameters
                         </h3>
                     </CardHeader>
-                    <CardContent>
-                        <form className="space-y-4">
-                            <div className="grid md:grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Blood Group Needed</label>
+                    <CardContent className="p-8">
+                        <form className="space-y-6">
+                            <div className="grid md:grid-cols-2 gap-6">
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Blood Group Target</label>
                                     <select
                                         value={formData.bloodGroup}
                                         onChange={(e) => setFormData({ ...formData, bloodGroup: e.target.value })}
-                                        className="w-full rounded-md border-gray-300 dark:border-gray-700 shadow-sm focus:border-red-500 focus:ring-red-500 p-2 border bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                                        className="w-full bg-navy-900 border-navy-700 rounded-2xl p-4 text-white focus:border-[#e60026] transition-all outline-none appearance-none cursor-pointer"
                                     >
-                                        <option value="">Select...</option>
-                                        <option value="A+">A+</option>
-                                        <option value="A-">A-</option>
-                                        <option value="B+">B+</option>
-                                        <option value="B-">B-</option>
-                                        <option value="AB+">AB+</option>
-                                        <option value="AB-">AB-</option>
-                                        <option value="O+">O+</option>
-                                        <option value="O-">O-</option>
+                                        <option value="">Select Target Group...</option>
+                                        {['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map(group => (
+                                            <option key={group} value={group}>{group}</option>
+                                        ))}
                                     </select>
                                 </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Urgency</label>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Urgency Level</label>
                                     <select
                                         value={formData.urgency}
                                         onChange={(e) => setFormData({ ...formData, urgency: e.target.value })}
-                                        className="w-full rounded-md border-gray-300 dark:border-gray-700 shadow-sm focus:border-red-500 focus:ring-red-500 p-2 border bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                                        className="w-full bg-navy-900 border-navy-700 rounded-2xl p-4 text-white focus:border-[#e60026] transition-all outline-none appearance-none cursor-pointer"
                                     >
-                                        <option value="Emergency">Emergency</option>
-                                        <option value="Scheduled">Scheduled</option>
+                                        <option value="Emergency">EMERGENCY (IMMEDIATE)</option>
+                                        <option value="Scheduled">SCHEDULED (UPCOMING)</option>
                                     </select>
                                 </div>
                             </div>
-                            <Button type="button" onClick={handleSubmit} className="w-full">Broadcast Request</Button>
+                            <Button type="button" onClick={handleSubmit} className="w-full h-14 rounded-2xl font-black text-lg shadow-xl shadow-[#e60026]/20">
+                                BROADCAST EMERGENCY SIGNAL
+                            </Button>
                         </form>
                     </CardContent>
                 </Card>
@@ -103,9 +129,9 @@ export default function PatientDashboard() {
             {/* My Active Requests (Acknowledgement Loop) */}
             {myRequests && myRequests.length > 0 && (
                 <div className="space-y-4">
-                    <h3 className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                        <Activity className="h-5 w-5 text-red-600 dark:text-red-500" />
-                        My Active Requests
+                    <h3 className="text-2xl font-black text-white tracking-tight flex items-center gap-3">
+                        <Activity className="h-6 w-6 text-[#e60026]" />
+                        Active Requests
                     </h3>
                     {myRequests.map(req => (
                         <Card key={req.id} className={`border-l-4 ${req.status === 'accepted' ? 'border-l-green-500 bg-green-50 dark:bg-green-900/10 dark:border-green-900/50' : 'border-l-amber-500 bg-amber-50 dark:bg-amber-900/10 dark:border-l-amber-500/50'}`}>
